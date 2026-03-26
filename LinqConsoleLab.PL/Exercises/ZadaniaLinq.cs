@@ -1,4 +1,6 @@
 using LinqConsoleLab.PL.Data;
+using LinqConsoleLab.PL.Models;
+using System.Linq;
 
 namespace LinqConsoleLab.PL.Exercises;
 
@@ -16,7 +18,12 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie01_StudenciZWarszawy()
     {
+        var query = from s in DaneUczelni.Studenci 
+                    where s.Miasto.Equals("Warsaw")
+                    select s;
+        
         throw Niezaimplementowano(nameof(Zadanie01_StudenciZWarszawy));
+        return query;
     }
 
     /// <summary>
@@ -30,6 +37,9 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie02_AdresyEmailStudentow()
     {
+        var query = from s in DaneUczelni.Studenci
+            select s.Email;
+        return query;
         throw Niezaimplementowano(nameof(Zadanie02_AdresyEmailStudentow));
     }
 
@@ -45,6 +55,9 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie03_StudenciPosortowani()
     {
+        var query = DaneUczelni.Studenci.OrderBy(s => s.Imie && s.Nazwisko);
+            
+                    
         throw Niezaimplementowano(nameof(Zadanie03_StudenciPosortowani));
     }
 
