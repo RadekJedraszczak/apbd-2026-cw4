@@ -304,6 +304,12 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie15_ProwadzacyILiczbaPrzedmiotow()
     {
+        var query = from pr in DaneUczelni.Prowadzacy
+            join p in DaneUczelni.Przedmioty on pr.Id equals p.ProwadzacyId
+                into PrzedmiotyProwadzacego
+            select $"{pr.Imie}, {pr.Nazwisko}: {PrzedmiotyProwadzacego.Count()}";
+        
+        return query;
         throw Niezaimplementowano(nameof(Zadanie15_ProwadzacyILiczbaPrzedmiotow));
     }
 
@@ -321,6 +327,13 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie16_NajwyzszaOcenaKazdegoStudenta()
     {
+        var query = from s in DaneUczelni.Studenci
+                    join z in DaneUczelni.Zapisy on s.Id equals z.StudentId
+                        where z.OcenaKoncowa != null
+                        group z by new {s.Imie, s.Nazwisko} into g
+                        select $"{g.Key.Imie} {g.Key.Nazwisko}: {g.Max(x => x.OcenaKoncowa)}";
+        return query;
+        
         throw Niezaimplementowano(nameof(Zadanie16_NajwyzszaOcenaKazdegoStudenta));
     }
 
@@ -339,6 +352,15 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Wyzwanie01_StudenciZWiecejNizJednymAktywnymPrzedmiotem()
     {
+        var query = from s in DaneUczelni.Studenci
+            join z in DaneUczelni.Zapisy on s.Id equals z.StudentId
+            where z.CzyAktywny
+            group z by new { s.Imie, s.Nazwisko }
+            into g
+            where g.Count() > 1
+            select $"{g.Key.Imie} {g.Key.Nazwisko}: {g.Count()}";
+        return query;
+                        
         throw Niezaimplementowano(nameof(Wyzwanie01_StudenciZWiecejNizJednymAktywnymPrzedmiotem));
     }
 
@@ -356,6 +378,16 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Wyzwanie02_PrzedmiotyStartujaceWKwietniuBezOcenKoncowych()
     {
+        var query = from p in DaneUczelni.Przedmioty
+            where p.DataStartu.Month == 4 && p.DataStartu.Year == 2026
+            join z in DaneUczelni.Zapisy on p.Id equals z.PrzedmiotId
+            group z by p.Nazwa
+            into g
+            where g.All(z => z.OcenaKoncowa == null)
+            select g.Key;
+        
+        return query;
+        
         throw Niezaimplementowano(nameof(Wyzwanie02_PrzedmiotyStartujaceWKwietniuBezOcenKoncowych));
     }
 
@@ -374,6 +406,7 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Wyzwanie03_ProwadzacyISredniaOcenNaIchPrzedmiotach()
     {
+        
         throw Niezaimplementowano(nameof(Wyzwanie03_ProwadzacyISredniaOcenNaIchPrzedmiotach));
     }
 
@@ -392,6 +425,15 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Wyzwanie04_MiastaILiczbaAktywnychZapisow()
     {
+        var query = from s in DaneUczelni.Studenci
+            join z in DaneUczelni.Zapisy on s.Id equals z.StudentId
+            where z.CzyAktywny
+            group z by s.Miasto
+            into g
+            orderby g.Count() descending
+            select $"{g.Key}: {g.Count()}";
+        
+        return query;
         throw Niezaimplementowano(nameof(Wyzwanie04_MiastaILiczbaAktywnychZapisow));
     }
 
